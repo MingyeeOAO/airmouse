@@ -4,9 +4,9 @@ import pyautogui
 import screeninfo
 
 
-def mousePosScale(Pos):
+def mousePosScale(Pos, scale):
     Pos -= 0.5
-    Pos *= 1.5
+    Pos *= scale
     Pos += 0.5
     Pos[0] = max(0, min(1, Pos[0]))
     Pos[1] = max(0, min(1, Pos[1]))
@@ -52,8 +52,14 @@ class control:
         newPos = numpy.array(Dis + self.mousePosRecord[0])
         self.pushPos(newPos, setPos)
 
-    def mouseDown(self):
-        pyautogui.mouseDown()
+    def mouseDown(self, button):
+        pyautogui.mouseDown(button=button)
 
-    def mouseUp(self):
-        pyautogui.mouseUp()
+    def mouseUp(self, button):
+        pyautogui.mouseUp(button=button)
+
+    def keyDown(self, button):
+        pyautogui.keyDown(button)
+
+    def keyUp(self, button):
+        pyautogui.keyUp(button)

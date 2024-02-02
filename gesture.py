@@ -4,9 +4,11 @@ import numpy
 
 def gesturesName(fingerResult):
     if ((fingerResult == numpy.array([0, 1, 0, 0, 0])).all()):
-        return "click"
+        return "leftClick"
     elif ((fingerResult == numpy.array([1, 1, 1, 1, 1])).all()):
         return "fist"
+    elif ((fingerResult == numpy.array([1, 1, 0, 1, 1])).all()):
+        return "fuck you"
     else:
         return "others"
 
@@ -33,13 +35,13 @@ def analize(landmark):
                                            fingersVector[i][1])
 
     fingersResult = numpy.zeros(5)
-    fingersTriggerDegrees = numpy.array([120, 100, 100, 100, 100])
+    fingersTriggerDegrees = numpy.array([130, 100, 100, 100, 100])
     for i in range(5):
         if (abs(fingersDegree[i]) < fingersTriggerDegrees[i]):
             fingersResult[i] = 1
         else:
             fingersResult[i] = 0
 
-    print(fingersDegree)
+    # print(fingersDegree)
 
     return fingersResult

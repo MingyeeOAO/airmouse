@@ -17,7 +17,7 @@ hands = mpHands.Hands(model_complexity=1,
 mpDraw = mp.solutions.drawing_utils
 
 FPS = fps.fps()
-
+lastGesture = numpy.zeros(5)
 while True:
     ret, img = cap.read()
 
@@ -29,21 +29,47 @@ while True:
 
             mainLandmark = result.multi_hand_landmarks[0]
 
-            curGesture = gesture.gesturesName(
-                gesture.analize(mainLandmark.landmark))
+            curGesture = gesture.analize(mainLandmark.landmark)
+            curGestureName = gesture.gesturesName(curGesture)
 
             print(curGesture)
-            if (curGesture == "click"):
-                mouseControl.mouseDown()
-            elif (curGesture == "fist"):
+            print(curGestureName)
+            if (curGestureName == "fist"):
                 break
             else:
-                mouseControl.mouseUp()
+                if (curGesture[1] != lastGesture[1]):
+                    if (curGesture[1] == 1):
+                        print("leftClick")
+                        mouseControl.mouseDown(button="left")
+                    else:
+                        mouseControl.mouseUp(button="left")
+
+                if (curGesture[2] != lastGesture[2]):
+                    if (curGesture[2] == 1):
+                        print("rightClick")
+                        mouseControl.mouseDown(button="right")
+                    else:
+                        mouseControl.mouseUp(button="right")
+
+                if (curGesture[3] != lastGesture[3]):
+                    if (curGesture[3] == 1):
+                        print("shift")
+                        mouseControl.keyDown(button="shift")
+                    else:
+                        mouseControl.keyUp(button="shift")
+
+                if (curGesture[4] != lastGesture[4]):
+                    if (curGesture[4] == 1):
+                        print("ctrl")
+                        mouseControl.keyDown(button="ctrl")
+                    else:
+                        mouseControl.keyUp(button="ctrl")
+                lastGesture = curGesture
 
             handX = mainLandmark.landmark[9].x
             handY = mainLandmark.landmark[9].y
             handPosition = numpy.array((1 - handX, handY))
-            handPosition = smoothMouseControl.mousePosScale(handPosition)
+            handPosition = smoothMouseControl.mousePosScale(handPosition, 1.5)
             mouseControl.pushPos(handPosition)
 
             for handLms in result.multi_hand_landmarks:
