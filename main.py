@@ -43,9 +43,7 @@ while True:
             handX = mainLandmark.landmark[9].x
             handY = mainLandmark.landmark[9].y
             handPosition = numpy.array((1 - handX, handY))
-            # print(handPosition)
             handPosition = smoothMouseControl.mousePosScale(handPosition)
-            # print(handPosition)
             mouseControl.pushPos(handPosition)
 
             for handLms in result.multi_hand_landmarks:
