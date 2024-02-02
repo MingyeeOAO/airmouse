@@ -35,7 +35,7 @@ while True:
             print(curGesture)
             if (curGesture == "click"):
                 mouseControl.mouseDown()
-            elif(curGesture == "fist"):
+            elif (curGesture == "fist"):
                 break
             else:
                 mouseControl.mouseUp()
@@ -43,11 +43,9 @@ while True:
             handX = mainLandmark.landmark[9].x
             handY = mainLandmark.landmark[9].y
             handPosition = numpy.array((1 - handX, handY))
-            handPosition -= 0.5
-            handPosition *= 1.5
-            handPosition += 0.5
-            handPosition[0] = max(0, min(1, handPosition[0]))
-            handPosition[1] = max(0, min(1, handPosition[1]))
+            # print(handPosition)
+            handPosition = smoothMouseControl.mousePosScale(handPosition)
+            # print(handPosition)
             mouseControl.pushPos(handPosition)
 
             for handLms in result.multi_hand_landmarks:

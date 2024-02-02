@@ -1,7 +1,7 @@
 import tools
 import numpy
 
-#dnkajbdkjsdbakjdbsak
+
 def gesturesName(fingerResult):
     if ((fingerResult == numpy.array([0, 1, 0, 0, 0])).all()):
         return "click"

@@ -4,6 +4,15 @@ import pyautogui
 import screeninfo
 
 
+def mousePosScale(Pos):
+    Pos -= 0.5
+    Pos *= 1.5
+    Pos += 0.5
+    Pos[0] = max(0, min(1, Pos[0]))
+    Pos[1] = max(0, min(1, Pos[1]))
+    return Pos
+
+
 class control:
 
     def __init__(self, smooth=5):
@@ -21,11 +30,13 @@ class control:
 
     def setPos(self):
         x, y = self.getPos()
+        x = int(x)
+        y = int(y)
         mouse.move(x, y)
 
     def getPos(self):
         self.speedMove()
-        self.curPos = self.mousePosRecord.sum(axis=0) / 5
+        self.curPos = self.mousePosRecord.sum(axis=0) / self.smooth
         self.curPos = self.curPos * self.screenSize
         return self.curPos
 
