@@ -118,6 +118,3 @@ while True:
     
 
 cap.release()
-
-
-# I am a fake bug
