@@ -13,8 +13,9 @@ cap = cv2.VideoCapture(0)
 
 mpHands = mp.solutions.hands
 hands = mpHands.Hands(model_complexity=1,
+                      max_num_hands=1,
                       min_detection_confidence=0.9,
-                      min_tracking_confidence=0.01)
+                      min_tracking_confidence=0.001)
 mpDraw = mp.solutions.drawing_utils
 
 FPS = fps.fps()

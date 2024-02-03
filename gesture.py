@@ -32,7 +32,7 @@ def analize(landmark):
         fingersVector[i] = numpy.array(
             [vectors[0] - vectors[1], vectors[2] - vectors[1]])
 
-    print(fingersVector)
+    # print(fingersVector)
     
     for i in range(5):
         fingersDegree[i] = tools.getDegree(fingersVector[i][0],

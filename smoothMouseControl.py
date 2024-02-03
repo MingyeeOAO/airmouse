@@ -25,19 +25,19 @@ class control:
         self.avgScreenSize = self.screenSize.sum()/2
 
     def speedMove(self):
-        if (((self.mousePosRecord[0] - self.mousePosRecord[1])**2).sum()**0.5
-                >= 0.002*self.avgScreenSize):
+        if (((self.mousePosRecord[0] - self.getPos())**2).sum()**0.5
+                >= 0.01*self.avgScreenSize):
             for i in range(1, self.smooth):
                 self.mousePosRecord[i] = self.mousePosRecord[0]
 
     def setPos(self):
+        self.speedMove()
         x, y = self.getPos()
         x = int(x)
         y = int(y)
         mouse.move(x, y)
 
     def getPos(self):
-        self.speedMove()
         self.curPos = self.mousePosRecord.sum(axis=0) / self.smooth
         return self.curPos
 
