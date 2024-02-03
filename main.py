@@ -6,7 +6,8 @@ import numpy
 import fps
 import gesture
 
-mouseControl = smoothMouseControl.control()
+mouseControl = smoothMouseControl.control(smooth=5)
+mouseControlScale = int(1.5 * mouseControl.screenSize.sum() / 2)
 
 cap = cv2.VideoCapture(0)
 
@@ -18,6 +19,10 @@ mpDraw = mp.solutions.drawing_utils
 
 FPS = fps.fps()
 lastGesture = numpy.zeros(5)
+lastHandPosition = None
+
+fistExitCount = 0
+
 while True:
     ret, img = cap.read()
 
@@ -34,9 +39,35 @@ while True:
 
             print(curGesture)
             print(curGestureName)
+
+            handX = mainLandmark.landmark[9].x
+            handY = mainLandmark.landmark[9].y
+            handPosition = numpy.array((1 - handX, handY))
+
             if (curGestureName == "fist"):
-                break
+                fistExitCount += 1
+                if(fistExitCount>=5):
+                    if(lastGesture[1]):
+                        mouseControl.mouseUp(button="left")
+                    if(lastGesture[2]):
+                        mouseControl.mouseUp(button="right")
+                    if(lastGesture[3]):
+                        mouseControl.keyUp(button="shift")
+                    if(lastGesture[4]):
+                        mouseControl.keyUp(button="ctrl")
+                    break
             else:
+                fistExitCount=0
+                
+                if (curGesture[0] == 1):
+                    if (type(lastHandPosition) != type(None)):
+                        deltaHandPosition = handPosition - lastHandPosition
+                        deltaMousePos = deltaHandPosition * mouseControlScale
+                        mouseControl.pushDis(deltaMousePos)
+                    lastHandPosition = handPosition
+                else:
+                    lastHandPosition = None
+
                 if (curGesture[1] != lastGesture[1]):
                     if (curGesture[1] == 1):
                         print("leftClick")
@@ -66,12 +97,6 @@ while True:
                         mouseControl.keyUp(button="ctrl")
                 lastGesture = curGesture
 
-            handX = mainLandmark.landmark[9].x
-            handY = mainLandmark.landmark[9].y
-            handPosition = numpy.array((1 - handX, handY))
-            handPosition = smoothMouseControl.mousePosScale(handPosition, 1.5)
-            mouseControl.pushPos(handPosition)
-
             for handLms in result.multi_hand_landmarks:
                 mpDraw.draw_landmarks(img, handLms, mpHands.HAND_CONNECTIONS)
                 # for i, lm in enumerate(handLms.landmark):
@@ -79,7 +104,7 @@ while True:
 
         curFps = FPS.get()
         cv2.putText(img, "fps: " + str(int(curFps)), (0, 50),
-                    cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 2)
+                    cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 0), 2)
 
         cv2.imshow("img", img)
 
@@ -89,3 +114,6 @@ while True:
 
     if (cv2KeyEvent == 27):
         break
+    
+
+cap.release()

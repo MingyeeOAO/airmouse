@@ -20,12 +20,14 @@ class control:
         self.screenMonitors = screeninfo.get_monitors()
         self.screenSize = numpy.array(
             (self.screenMonitors[0].width, self.screenMonitors[0].height))
-        self.mousePosRecord = numpy.zeros((smooth, 2))
+        self.mousePosRecord = numpy.array(pyautogui.position()*self.smooth)
+        self.mousePosRecord.resize((self.smooth,2))
+        self.avgScreenSize = self.screenSize.sum()/2
 
     def speedMove(self):
         if (((self.mousePosRecord[0] - self.mousePosRecord[1])**2).sum()**0.5
-                >= 0.005):
-            for i in range(1, 5):
+                >= 0.002*self.avgScreenSize):
+            for i in range(1, self.smooth):
                 self.mousePosRecord[i] = self.mousePosRecord[0]
 
     def setPos(self):
@@ -37,11 +39,12 @@ class control:
     def getPos(self):
         self.speedMove()
         self.curPos = self.mousePosRecord.sum(axis=0) / self.smooth
-        self.curPos = self.curPos * self.screenSize
         return self.curPos
 
     def pushPos(self, Pos, setPos=True):
         newPos = numpy.array(Pos)
+        newPos[0] = max(0, min(self.screenSize[0]-1, newPos[0]))
+        newPos[1] = max(0, min(self.screenSize[1]-1, newPos[1]))
         for i in range(self.smooth - 1, 0, -1):
             self.mousePosRecord[i] = self.mousePosRecord[i - 1]
         self.mousePosRecord[0] = newPos
