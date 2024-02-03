@@ -1,0 +1,5 @@
+fix bug: 拇指彎曲角度不能到180
+new: 增加幀數(fps)
+new: 更順暢的滑鼠移動
+new: 嘗試用mediapipe hand landmark 的 z 座標實現三維手勢計算，使滑鼠控制更精確
+new: 空中鍵盤
