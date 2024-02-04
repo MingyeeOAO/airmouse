@@ -24,6 +24,18 @@ lastHandPosition = None
 
 fistExitCount = 0
 
+lastMouseStatus = 0
+
+def mouseExit(lastGesture):
+    if(lastGesture[1]):
+        mouseControl.mouseUp(button="left")
+    if(lastGesture[2]):
+        mouseControl.mouseUp(button="right")
+    if(lastGesture[3]):
+        mouseControl.keyUp(button="shift")
+    if(lastGesture[4]):
+        mouseControl.keyUp(button="ctrl")
+
 while True:
     ret, img = cap.read()
 
@@ -48,14 +60,7 @@ while True:
             if (curGestureName == "fist"):
                 fistExitCount += 1
                 if(fistExitCount>=5):
-                    if(lastGesture[1]):
-                        mouseControl.mouseUp(button="left")
-                    if(lastGesture[2]):
-                        mouseControl.mouseUp(button="right")
-                    if(lastGesture[3]):
-                        mouseControl.keyUp(button="shift")
-                    if(lastGesture[4]):
-                        mouseControl.keyUp(button="ctrl")
+                    mouseExit(lastGesture==lastGesture)
                     break
             else:
                 fistExitCount=0
@@ -102,6 +107,9 @@ while True:
                 mpDraw.draw_landmarks(img, handLms, mpHands.HAND_CONNECTIONS)
                 # for i, lm in enumerate(handLms.landmark):
                 #     print(i, lm.x, lm.y)
+        
+        else:
+            mouseExit(lastGesture==lastGesture)
 
         curFps = FPS.get()
         cv2.putText(img, "fps: " + str(int(curFps)), (0, 50),
